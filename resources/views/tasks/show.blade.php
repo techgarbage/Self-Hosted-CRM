@@ -92,11 +92,10 @@
                 {{ __('Add time') }}
             </button>
 
-            <button type="button" class="btn btn-primary form-control movedown" data-toggle="modal"
-                    data-target="#myModal">
-                {{ __('Create invoice') }}
-            </button>
-            
+            @if($tasks->invoice)
+                <a href="/invoices/{{$tasks->invoice->id}}">See the invoice</a>
+            @endif
+
             <div class="activity-feed movedown">
                 @foreach($tasks->activity as $activity)
                     <div class="feed-item">

@@ -68,6 +68,11 @@ class Task extends Model
     }
 
     public function canUpdateInvoice(){
+        //If there is no invoice, it should be possible, because it also creates
+        if(!$this->invoice)
+        {
+            return true;
+        }
         return $this->invoice->canUpdateInvoice();
     }
 
