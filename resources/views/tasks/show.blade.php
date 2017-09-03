@@ -79,23 +79,22 @@
                     <th>{{ __('Time') }}</th>
                 </tr>
                 <tbody>
-                @foreach($invoice_lines as $invoice_line)
+               @foreach($invoice_lines as $invoice_line)
                     <tr>
                         <td style="padding: 5px">{{$invoice_line->title}}</td>
                         <td style="padding: 5px">{{$invoice_line->quantity}} </td>
                     </tr>
                 @endforeach
+     
                 </tbody>
             </table>
             <br/>
             <button type="button" {{ $tasks->canUpdateInvoice() == 'true' ? '' : 'disabled'}} class="btn btn-primary form-control" value="add_time_modal" data-toggle="modal" data-target="#ModalTimer" >
                 {{ __('Add time') }}
             </button>
-
             @if($tasks->invoice)
                 <a href="/invoices/{{$tasks->invoice->id}}">See the invoice</a>
-            @endif
-
+            @endif 
             <div class="activity-feed movedown">
                 @foreach($tasks->activity as $activity)
                     <div class="feed-item">
@@ -105,97 +104,8 @@
                     </div>
                 @endforeach
             </div>
-            <div class="modal fade" id="ModalTimer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                        aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModalLabel">
-                            {{ __('Time management') }}
-                                ({{$tasks->title}})</h4>
-                            
-                            }
-                        </div>
-                       {!! Form::open([
-                            'method' => 'post',
-                            'url' => ['tasks/updatetime', $tasks->id],
-                        ]) !!}
-                        <div class="modal-body">
-
-                 
-
-                            <div class="form-group">
-                                {!! Form::label('title', __('Title'), ['class' => 'control-label']) !!}
-                                {!! Form::text('title', null, ['class' => 'form-control', 'placeholder' =>  Lang::get('task.invoices.modal.title_placerholder')]) !!}
-                            </div>
-                            <div class="form-group">
-                                {!! Form::label('comment',  __('Description'), ['class' => 'control-label']) !!}
-                                {!! Form::textarea('comment', null, ['class' => 'form-control', 'placeholder' => Lang::get('task.invoices.modal.description_placerholder')]) !!}
-                            </div>
-                            <div class="form-group">
-                                {!! Form::label('value', __('Hourly price'), ['class' => 'control-label']) !!}
-                                {!! Form::text('value', null, ['class' => 'form-control', 'placeholder' => '300']) !!}
-                            </div>
-                            <div class="form-group">
-                                {!! Form::label('time', __('Time spend'), ['class' => 'control-label']) !!}
-                                {!! Form::text('time', null, ['class' => 'form-control', 'placeholder' => '3']) !!}
-                            </div>
-
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default col-lg-6"
-                                    data-dismiss="modal">{{ __('Close') }}</button>
-                            <div class="col-lg-6">
-                                {!! Form::submit( __('Register time'), ['class' => 'btn btn-success form-control closebtn']) !!}
-                            </div>
-                          
-                        </div>
-                          {!! Form::close() !!}
-                    </div>
-                </div>
-            </div>
 
             @include('invoices._invoiceLineModal', ['title' => $tasks->title, 'id' => $tasks->id, 'type' => 'task'])
-
-            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                        aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModalLabel">{{ __('Create invoice')}} </h4>
-                        </div>
-                        {!! Form::model($tasks, [
-                           'method' => 'POST',
-                           'url' => ['tasks/invoice', $tasks->id],
-                        ]) !!}
-                        <div class="modal-body">
-                            @if($apiconnected)
-                                @foreach ($contacts as $key => $contact)
-                                    {!! Form::radio('invoiceContact', $contact['guid']) !!}
-                                    {{$contact['name']}}
-                                    <br/>
-                                @endforeach
-                                {!! Form::label('mail', __('Send mail with invoice to Customer?(Cheked = Yes):'), ['class' => 'control-label']) !!}
-                                {!! Form::checkbox('sendMail', true) !!}
-                            @endif
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default col-lg-6"
-                                    data-dismiss="modal">{{ __('Close') }}</button>
-                            <div class="col-lg-6">
-                                {!! Form::submit(__('Create'), ['class' => 'btn btn-success form-control closebtn']) !!}
-                            </div>
-                        </div>
-                      {!! Form::close() !!}
-                    </div>
-                </div>
-            </div>
-
-
         </div>
-
     </div>
 @stop

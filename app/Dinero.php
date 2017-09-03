@@ -107,13 +107,13 @@ class Dinero
         return $res;
     }
 
-    public function getContacts()
+    public function getContacts($filter = "")
     {
-        $res = self::getClient()->request('GET', 'https://api.dinero.dk/v1/'
-            . self::$organizationId . '/contacts?field=Name,ContactGuid', [
-            'verify' => false,
-            'headers' => [
-                'Authorization' => 'Bearer ' . self::$accessToken
+        $res = self::getClient()->request("GET", "https://api.dinero.dk/v1/"
+            . self::$organizationId . "/contacts?field=Name,ContactGuid&queryFilter=Email+contains+" . "'" . $filter . "'", [
+            "verify" => false,
+            "headers" => [
+                "Authorization" => "Bearer " . self::$accessToken
             ]
         ]);
 
