@@ -25,6 +25,8 @@ class TasksTable extends Migration
             $table->foreign('user_created_id')->references('id')->on('users');
             $table->integer('client_id')->unsigned();
             $table->foreign('client_id')->references('id')->on('clients');
+            $table->integer('invoice_id')->unsigned()->nullable();
+            $table->foreign('invoice_id')->references('id')->on('invoices');
             $table->date('deadline');
             $table->timestamps();
         });
