@@ -61,7 +61,7 @@ class InvoiceRepository implements InvoiceRepositoryContract
                 'text'=>"user has created, and send the invoice to the customer",
                 'user_id'=>\Illuminate\Support\Facades\Auth::id(),
                 'source_type'=>Invoice::class,
-                'source_id'=>$invoice->id;
+                'source_id'=>$invoice->id,
                 'action'=>"send_invoice"
             ]);
         }

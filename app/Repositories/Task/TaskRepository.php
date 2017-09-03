@@ -111,7 +111,7 @@ class TaskRepository implements TaskRepositoryContract
     {
         $task = Task::findOrFail($id);
         
-        $invoice=$tasks->invoice;
+        $invoice=$task->invoice;
         if(!$invoice)
         {
             $invoice=Invoice::create([

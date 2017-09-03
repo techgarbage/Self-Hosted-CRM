@@ -50,7 +50,7 @@ class InvoicesController extends Controller
      */
     public function show($id)
     {
-        $integrationCheck = Integration::first();
+        $integrationCheck = \App\Models\Integration::first();
         $invoice = $this->invoices->find($id);
         if ($integrationCheck) 
         {
