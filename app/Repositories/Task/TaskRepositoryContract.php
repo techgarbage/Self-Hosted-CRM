@@ -6,7 +6,7 @@ interface TaskRepositoryContract
 
     public function find($id);
 
-    public function getTaskTime($id);
+    public function getInvoiceLines($id);
     
     public function create($requestData);
 
@@ -15,8 +15,6 @@ interface TaskRepositoryContract
     public function updateTime($id, $requestData);
 
     public function updateAssign($id, $requestData);
-
-    public function invoice($id, $requestData);
 
     public function tasks();
 

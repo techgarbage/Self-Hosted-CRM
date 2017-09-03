@@ -3,7 +3,11 @@ namespace App\Repositories\Invoice;
 
 use App\Models\Invoice;
 use App\Models\Client;
-use App\Models\TaskTime;
+use Carbon\Carbon;
+use App\Models\Integration;
+use App\Models\Task;
+use Session;
+use App\Models\InvoiceLine;
 
 class InvoiceRepository implements InvoiceRepositoryContract
 {
@@ -17,30 +21,68 @@ class InvoiceRepository implements InvoiceRepositoryContract
         return Invoice::findOrFail($id);
     }
 
-    public function create($clientid, $timetaskid, $requestData)
+    public function invoice($id, $requestData)
     {
-        $invoice = Invoice::create();
-        $invoice->clients()->attach($clientid);
+        $contatGuid = $requestData->invoiceContact;
+        $invoice_lines=Invoice::find($id)->invoiceLines;
+        $sendMail=$requestData->sendMail;
+        $productLines=[];
 
-        foreach ($timetaskid as $tk) {
-            $testid[] = $tk->id;
+        foreach($invoice_lines as $invoice_line)
+        {
+            $productLines[]=[
+                'Description' => $invoice_line->title,
+                'Comments' => $invoice_line->comment,
+                'BaseAmountValue' => $invoice_line->value,
+                'Quantity' => $invoice_line->time,
+                'AccountNumber' => 1000,
+                'Unit' => 'hours'
+            ];
         }
 
-        $invoice->tasktime()->attach($testid);
-        $invoice->save();
+        $api=Integration::getApi('billing');
+
+        $results=$api->createInvoice([
+            'currency'=>'DKK',
+            'description'=>$task->title,
+            'contact_id'=>$contatGuid,
+            'product_lines'=>$productLines
+        ]);
+
+        \App\Models\Activity::create([
+            'text'=>"user has created, a invoice draft for this task",
+            'user_id'=>\Illuminate\Support\Facades\Auth::id(),
+            'source_type'=>Invoice::class,
+            'action'=>"sent_invoice"
+        ]);
+
+        if($sendMail==true)
+        {
+            $booked = $api->bookInvoices($results->Guid, $results->TimeStamp);
+            $bookGuid=$booked->Guid;
+            $bookTime=$booked->TimeStamp;
+            $api->sendInvoice($bookGuid, $bookTime);
+
+            \App\Models\Activity::create([
+                'text'=>"user has created, and send the invoice to the customer",
+                'user_id'=>\Illuminate\Support\Facades\Auth::id(),
+                'source_type'=>Invoice::class,
+                'source_id'=>$invoice->id;
+                'action'=>"send_invoice"
+            ]);
+        }
     }
 
     public function updateSentStatus($id, $requestData)
     {
-        $invoice = invoice::findOrFail($id);
-        $input = array_replace($requestData->all(), ['sent' => 1]);
-        $invoice->fill($input)->save();
-    }
+        $api=Integration::whereApiType('billing')->first();
+        if($api)
+        {
+            $this->invoice($id, $requestData);
+        }
 
-    public function updateSentReopen($id, $requestData)
-    {
         $invoice = invoice::findOrFail($id);
-        $input = array_replace($requestData->all(), ['sent' => 0]);
+        $input = array_replace($requestData->all(), ['sent_at' => Carbon::now(), 'status'=>'sent']);
         $invoice->fill($input)->save();
     }
 
@@ -48,32 +90,34 @@ class InvoiceRepository implements InvoiceRepositoryContract
     {
         $invoice = invoice::findOrFail($id);
         $input = $requestData->get('payment_date');
-        $input = array_replace($requestData->all(), ['payment_date' => $input, 'received' => 1]);
+        $input = array_replace($requestData->all(), ['due_at' => $input, 'payment_received_at' => Carbon::now()]);
         $invoice->fill($input)->save();
     }
 
     public function reopenPayment($id, $requestData)
     {
         $invoice = invoice::findOrFail($id);
-        $input = array_replace($requestData->all(), ['received' => 0]);
+        $input = array_replace($requestData->all(), ['payment_received_at' => null]);
         $invoice->fill($input)->save();
     }
 
-    public function newItem($id, $requestData)
+    public function newItem($id, $request)
     {
         $invoice = invoice::findOrFail($id);
 
-        $tasktimeId = $invoice->tasktime()->first()->task_id;
+        if(!$invoice->canUpdateInvoice())
+        {
+            return Session::flash('flash_message_warning', __("Can't insert new invoice line, to already sent invoice"));
+        }
 
-        $clientid = $invoice->clients()->first()->id;
-
-        $input = array_replace($requestData->all(), ['task_id' => "$tasktimeId"]);
-
-        $tasktime = TaskTime::create($input);
-        $insertedId = $tasktime->id;
-
-        $invoice->tasktime()->attach($insertedId);
-        $invoice->clients()->attach($clientid);
+        InvoiceLine::create([
+            'title'=>$request->title,
+            'comment'=>$request->comment,
+            'quantity'=>$request->quantity,
+            'type'=>$request->type,
+            'price'=>$request->price,
+            'invoice_id'=>$invoice->id
+        ]);
     }
 
     public function destroy($id)
