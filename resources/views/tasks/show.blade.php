@@ -79,16 +79,16 @@
                     <th>{{ __('Time') }}</th>
                 </tr>
                 <tbody>
-                @foreach($tasktimes as $tasktime)
+                @foreach($invoice_lines as $invoice_line)
                     <tr>
-                        <td style="padding: 5px">{{$tasktime->title}}</td>
-                        <td style="padding: 5px">{{$tasktime->time}} </td>
+                        <td style="padding: 5px">{{$invoice_line->title}}</td>
+                        <td style="padding: 5px">{{$invoice_line->quantity}} </td>
                     </tr>
                 @endforeach
                 </tbody>
             </table>
             <br/>
-            <button type="button" class="btn btn-primary form-control" value="add_time_modal" data-toggle="modal" data-target="#ModalTimer">
+            <button type="button" {{ $tasks->canUpdateInvoice() == 'true' ? '' : 'disabled'}} class="btn btn-primary form-control" value="add_time_modal" data-toggle="modal" data-target="#ModalTimer" >
                 {{ __('Add time') }}
             </button>
 
@@ -158,6 +158,7 @@
                 </div>
             </div>
 
+            @include('invoices._invoiceLineModal', ['title' => $tasks->title, 'id' => $tasks->id, 'type' => 'task'])
 
             <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog" role="document">

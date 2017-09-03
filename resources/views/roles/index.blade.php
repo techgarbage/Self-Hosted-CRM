@@ -25,7 +25,7 @@
             'route' => ['roles.destroy', $role->id]
         ]); !!}
                         @if($role->id !== 1)
-                            {!! Form::submit(__('Delete Role'), ['class' => 'btn btn-danger', 'onclick' => 'return confirm("Are you sure?")']); !!}
+                            {!! Form::submit(__('Delete'), ['class' => 'btn btn-danger', 'onclick' => 'return confirm("Are you sure?")']); !!}
                         @endif
                         {!! Form::close(); !!}</td>
                     </td>

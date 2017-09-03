@@ -59,6 +59,10 @@ body {
 
 }
 
+.form-control[disabled]
+{
+    background-color: #424242;
+}
 
 .navbar-toggle {
 	    display: block;
