@@ -1,10 +1,21 @@
 @extends('layouts.master')
 @section('heading')
-
-    <h1>{{__('All clients')}}</h1>
-    <input type="button" class="btn btn-danger" onclick="location.href = '/clients/excel';" value="Export excel"/>
-    <input type="button" class="btn btn-info" onclick="alert('Đang phát triển...')" value="Import excel"/>
-
+    <span>
+        {{__('All clients')}}
+        <input type="button" class="btn btn-danger" onclick="location.href = '/clients/excel';" value="Export excel"/>
+    </span>
+    <span>
+        {!! Form::open([
+            'url' => '/clients/importExcel',
+            'files'=>true,
+            'enctype' => 'multipart/form-data',
+            'class' => 'btn btn-info'
+            ])
+        !!}
+            {!! Form::file('file',  null, ['class' => '']) !!}
+            {!! Form::submit('Import excel', ['class' => 'btn btn-success pull-right']) !!}
+        {!! Form::close() !!}
+    </span>
 @stop
 
 @section('content')

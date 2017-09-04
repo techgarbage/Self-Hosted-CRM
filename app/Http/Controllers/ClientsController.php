@@ -108,6 +108,8 @@ class ClientsController extends Controller
     
             $excel->sheet('sheet1', function($sheet) use ($arr) {
                 $sheet->fromArray($arr, null, 'A1', false, false);
+                $sheet->freezeFirstRow();
+                $sheet->freezeFirstColumn();
                 $sheet->cells('A1:O1', function($cells) {
                     $cells->setFontWeight('bold');
                     $cells->setBackground('#F2C40F');
@@ -115,6 +117,69 @@ class ClientsController extends Controller
             });
     
         })->download('xlsx');
+    }
+
+    public function importExcel(Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'mimes:xlsx'
+        ]);
+        if($request->hasFile('file')){
+            $path = $request->file('file')->getRealPath();
+			$data = Excel::load($path, function($reader) {
+            })->get();            
+        }
+        $insert = [];
+        if(!empty($data) && $data->count()){
+            foreach ($data as $key => $value) {
+                $assignee_name = \App\Models\User::where('name', $value->user_assigned)->first();
+                if($assignee_name != null)
+                {
+                    $assignee_id=$assignee_name->id;
+                }
+                else
+                {
+                    $assignee_id = 1;
+                }
+
+                $industry_name=\App\Models\Industry::where('name', $value->industry)->first();
+                if($industry_name != null)
+                {
+                    $industry_id = $industry_name->id;
+                }
+                else
+                {
+                    $industry_id = 1;
+                }
+                
+                $insert[] = [
+                    'id' => $value->id, 
+                    'name' => $value->name,
+                    'email' => $value->email,
+                    'primary_number' => $value->primary_number,
+                    'secondary_number' => $value->secondary_number,
+                    'address' => $value->address,
+                    'zipcode' => $value->zip_code,
+                    'city' => $value->city,
+                    'company_name' => $value->company_name,
+                    'vat' => $value->vat,
+                    'company_type' => $value->company_type,
+                    'user_id' => $assignee_id,
+                    'industry_id' => $industry_id,
+                    'created_at' => $value->created_at,
+                    'updated_at' => $value->updated_at
+                ];
+            }
+            
+            if(!empty($insert)){
+                \Illuminate\Support\Facades\DB::table('clients')->insert($insert);
+            }
+            else
+            {
+                Session()->flash('flash_message_warning', 'Cannot import excel file');
+            }
+        }
+		return back();
     }
 
     /**

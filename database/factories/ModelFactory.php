@@ -35,7 +35,7 @@ $factory->define(App\Models\Client::class, function (Faker\Generator $faker) {
         'primary_number' => $faker->randomNumber(8),
         'secondary_number' => $faker->randomNumber(8),
         'industry_id' => $faker->numberBetween($min = 1, $max = 25),
-        'user_id' => $faker->numberBetween($min = 1, $max = 3),
+        'user_id' => $faker->numberBetween($min = 1, $max = 5),
         'company_type' => 'ApS',
     ];
 });
@@ -46,9 +46,9 @@ $factory->define(App\Models\Task::class, function (Faker\Generator $faker) {
     return [
         'title' => $faker->sentence,
         'description' => $faker->paragraph,
-        'user_created_id' => $faker->numberBetween($min = 1, $max = 3),
-        'user_assigned_id' => $faker->numberBetween($min = 1, $max = 3),
-        'client_id' => $faker->numberBetween($min = 1, $max = 50),
+        'user_created_id' => $faker->numberBetween($min = 1, $max = 5),
+        'user_assigned_id' => $faker->numberBetween($min = 1, $max = 5),
+        'client_id' => $faker->numberBetween($min = 1, $max = 1000),
         'status' => $faker->numberBetween($min = 1, $max = 2),
         'deadline' => $faker->dateTimeThisYear($max = 'now'),
         'created_at' => $faker->dateTimeThisYear($max = 'now'),
@@ -60,9 +60,9 @@ $factory->define(App\Models\Lead::class, function (Faker\Generator $faker) {
     return [
         'title' => $faker->sentence,
         'description' => $faker->paragraph,
-        'user_created_id' => $faker->numberBetween($min = 1, $max = 3),
-        'user_assigned_id' => $faker->numberBetween($min = 1, $max = 3),
-        'client_id' => $faker->numberBetween($min = 1, $max = 50),
+        'user_created_id' => $faker->numberBetween($min = 1, $max = 5),
+        'user_assigned_id' => $faker->numberBetween($min = 1, $max = 5),
+        'client_id' => $faker->numberBetween($min = 1, $max = 1000),
         'status' => $faker->numberBetween($min = 1, $max = 2),
         'contact_date' => $faker->dateTimeThisYear($max = 'now'),
         'created_at' => $faker->dateTimeThisYear($max = 'now'),
