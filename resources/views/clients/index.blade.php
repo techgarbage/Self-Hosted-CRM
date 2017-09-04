@@ -1,9 +1,14 @@
 @extends('layouts.master')
 @section('heading')
 
+    <h1>{{__('All clients')}}</h1>
+    <input type="button" class="btn btn-danger" onclick="location.href = '/clients/excel';" value="Export excel"/>
+    <input type="button" class="btn btn-info" onclick="alert('Đang phát triển...')" value="Import excel"/>
+
 @stop
 
 @section('content')
+    <hr/>
 
     <table class="table table-hover " id="clients-table">
         <thead>

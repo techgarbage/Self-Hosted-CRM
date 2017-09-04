@@ -40,6 +40,7 @@ Route::group(['middleware' => ['auth']], function () {
      */
     Route::group(['prefix' => 'clients'], function () {
         Route::get('/data', 'ClientsController@anyData')->name('clients.data');
+        Route::get('/excel', 'ClientsController@excel')->name('clients.excel');
         Route::post('/create/cvrapi', 'ClientsController@cvrapiStart');
         Route::post('/upload/{id}', 'DocumentsController@upload');
         Route::patch('/updateassign/{id}', 'ClientsController@updateAssign');

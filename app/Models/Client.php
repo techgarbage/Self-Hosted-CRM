@@ -25,6 +25,11 @@ class Client extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
+    public function industry()
+    {
+        return $this->belongsTo(Industry::class);
+    }
+
    public function tasks()
     {
         return $this->hasMany(Task::class, 'client_id', 'id')

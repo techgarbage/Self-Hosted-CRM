@@ -12,6 +12,7 @@ use App\Http\Requests\Client\UpdateClientRequest;
 use App\Repositories\User\UserRepositoryContract;
 use App\Repositories\Client\ClientRepositoryContract;
 use App\Repositories\Setting\SettingRepositoryContract;
+use Excel;
 
 class ClientsController extends Controller
 {
@@ -62,6 +63,58 @@ class ClientsController extends Controller
             {{csrf_field()}}
             </form>')
             ->make(true);
+    }
+
+    public function excel()
+    {
+        $clients = Client::all();
+        $arr =array();
+        $header=array('ID', 'Name', 'Email', 'Primary Number', 'Secondary Number', 'Address', 'Zip Code', 'City', 'Company Name', 'VAT', 'Company Type', 'User Assigned', 'Industry', 'Created At', 'Updated At');
+        array_push($arr, $header);
+        foreach($clients as $client) {
+            $industry = '';
+            if($client->industry != null || $client->industry == '')
+            {
+                $industry = ' ';
+            }
+            else
+            {
+                $industry = $client->industry->name;
+            }
+            $data=array(
+                $client->id,
+                $client->name,
+                $client->email,
+                $client->primary_number,
+                $client->secondary_number,
+                $client->address,
+                $client->zipcode,
+                $client->city,
+                $client->company_name,
+                $client->vat,
+                $client->company_type,
+                $client->user->name,
+                $industry,
+                $client->created_at,
+                $client->updated_at,
+            );
+            array_push($arr, $data);
+        }
+        // dd($arr);
+        Excel::create('clients', function($excel) use ($arr) {
+            $excel->setTitle('Clients');
+            $excel->setCreator('BIT')->setCompany('UEH BIT');
+            $excel->setDescription('Clients list');
+    
+            $excel->sheet('sheet1', function($sheet) use ($arr) {
+                $sheet->fromArray($arr, null, 'A1', false, false);
+                $sheet->cells('A1:O1', function($cells) {
+                    $cells->setFontWeight('bold');
+                    $cells->setBackground('#F2C40F');
+                });
+            });
+    
+        })->download('xlsx');
     }
 
     /**
