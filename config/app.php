@@ -166,7 +166,7 @@ return [
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\ViewComposerServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
-
+        JFuentesTgn\OcrSpace\OcrServiceProvider::class,
     ],
 
     /*
@@ -223,5 +223,6 @@ return [
         'permission' => \Zizaco\Entrust\Middleware\EntrustPermission::class,
         'ability' => \Zizaco\Entrust\Middleware\EntrustAbility::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        'OCR' => JFuentesTgn\OcrSpace\OcrFacade::class,
     ],
 ];

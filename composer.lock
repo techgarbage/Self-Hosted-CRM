@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "b4ae11bbb12fe5390de3ca5a3522ee8e",
+    "content-hash": "961d07e4ec720604150bdc19932ec317",
     "packages": [
         {
             "name": "barryvdh/laravel-debugbar",
@@ -635,6 +635,55 @@
                 "tokenizer"
             ],
             "time": "2016-12-07T09:37:55+00:00"
+        },
+        {
+            "name": "jfuentestgn/ocr-space",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jfuentestgn/ocr-space.git",
+                "reference": "3b5d2ece62d9928a0327310e7654a2c52d51922c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jfuentestgn/ocr-space/zipball/3b5d2ece62d9928a0327310e7654a2c52d51922c",
+                "reference": "3b5d2ece62d9928a0327310e7654a2c52d51922c",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "~6.0",
+                "php": ">=5.6.4"
+            },
+            "require-dev": {
+                "laravel/framework": "5.3.*",
+                "orchestra/testbench": "~3.0",
+                "phpunit/phpunit": "~5.0",
+                "squizlabs/php_codesniffer": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "JFuentesTgn\\OcrSpace\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Juan Fuentes",
+                    "email": "jfuentestgna@gmail.com"
+                }
+            ],
+            "description": "Laravel OCR.space API Client",
+            "keywords": [
+                "OCR",
+                "api",
+                "laravel",
+                "service"
+            ],
+            "time": "2017-01-19T20:24:14+00:00"
         },
         {
             "name": "laravel/dusk",
@@ -4588,7 +4637,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "laravelcollective/html": 20
+        "laravelcollective/html": 20,
+        "jfuentestgn/ocr-space": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
