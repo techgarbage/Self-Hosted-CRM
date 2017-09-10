@@ -28,8 +28,8 @@ class LeadsController extends Controller
         UserRepositoryContract $users,
         ClientRepositoryContract $clients,
         SettingRepositoryContract $settings
-    )
-    {
+    ) {
+    
         $this->users = $users;
         $this->settings = $settings;
         $this->clients = $clients;
@@ -60,8 +60,7 @@ class LeadsController extends Controller
             $leads = Lead::select(
                 ['id', 'title', 'user_created_id', 'client_id', 'user_assigned_id', 'contact_date']
             )->where('status', 1)->get();
-        }
-        else {
+        } else {
             $user_id = \Illuminate\Support\Facades\Auth::id();
             $leads = Lead::select(
                 ['id', 'title', 'user_created_id', 'client_id', 'user_assigned_id', 'contact_date']
@@ -69,18 +68,18 @@ class LeadsController extends Controller
         }
         return Datatables::of($leads)
             ->addColumn('titlelink', function ($leads) {
-            return '<a href="leads/' . $leads->id . '" ">' . $leads->title . '</a>';
-        })
+                return '<a href="leads/' . $leads->id . '" ">' . $leads->title . '</a>';
+            })
             ->editColumn('user_created_id', function ($leads) {
-            return $leads->creator->name;
-        })
+                return $leads->creator->name;
+            })
             ->editColumn('contact_date', function ($leads) {
-            return $leads->contact_date ? with(new Carbon($leads->created_at))
+                return $leads->contact_date ? with(new Carbon($leads->created_at))
                 ->format('d/m/Y') : '';
-        })
+            })
             ->editColumn('user_assigned_id', function ($leads) {
-            return $leads->user->name;
-        })->make(true);
+                return $leads->user->name;
+            })->make(true);
     }
 
     /**

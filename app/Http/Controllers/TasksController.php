@@ -31,8 +31,8 @@ class TasksController extends Controller
         ClientRepositoryContract $clients,
         InvoiceRepositoryContract $invoices,
         SettingRepositoryContract $settings
-    )
-    {
+    ) {
+    
         $this->tasks = $tasks;
         $this->users = $users;
         $this->clients = $clients;
@@ -61,8 +61,7 @@ class TasksController extends Controller
             $tasks = Task::select(
                 ['id', 'title', 'created_at', 'deadline', 'user_assigned_id']
             )->where('status', 1)->with("user");
-        }
-        else {
+        } else {
             $user_id = \Illuminate\Support\Facades\Auth::id();
             $tasks = Task::select(
                 ['id', 'title', 'created_at', 'deadline', 'user_assigned_id']
@@ -71,19 +70,19 @@ class TasksController extends Controller
         
         return Datatables::of($tasks)
             ->addColumn('titlelink', function ($tasks) {
-            return '<a href="tasks/' . $tasks->id . '" ">' . $tasks->title . '</a>';
-        })
+                return '<a href="tasks/' . $tasks->id . '" ">' . $tasks->title . '</a>';
+            })
             ->editColumn('created_at', function ($tasks) {
-            return $tasks->created_at ? with(new Carbon($tasks->created_at))
+                return $tasks->created_at ? with(new Carbon($tasks->created_at))
                 ->format('d/m/Y') : '';
-        })
+            })
             ->editColumn('deadline', function ($tasks) {
-            return $tasks->created_at ? with(new Carbon($tasks->created_at))
+                return $tasks->created_at ? with(new Carbon($tasks->created_at))
                 ->format('d/m/Y') : '';
-        })
+            })
             ->editColumn('user_assigned_id', function ($tasks) {
-            return $tasks->user->name;
-        })->make(true);
+                return $tasks->user->name;
+            })->make(true);
     }
 
 

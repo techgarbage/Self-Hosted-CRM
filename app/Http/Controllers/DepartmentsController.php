@@ -59,8 +59,7 @@ class DepartmentsController extends Controller
         if ($hasUsers > 0) {
             Session::flash('flash_message_warning', 'Cannot delete department when it has users');
             return redirect()->route('departments.index');
-        }
-        else {
+        } else {
             $this->departments->destroy($id);
             return redirect()->route('departments.index');
         }

@@ -16,8 +16,8 @@ class InvoicesController extends Controller
     public function __construct(
         InvoiceRepositoryContract $invoices,
         ClientRepositoryContract $clients
-    )
-    {
+    ) {
+    
         $this->invoices = $invoices;
         $this->clients = $clients;
     }
@@ -52,19 +52,15 @@ class InvoicesController extends Controller
     {
         $integrationCheck = \App\Models\Integration::first();
         $invoice = $this->invoices->find($id);
-        if ($integrationCheck) 
-        {
+        if ($integrationCheck) {
             $api = Integration::getApi('billing');
             $apiConnected = true;
             $invoiceContacts = $api->getContacts($invoice->client->email);
             // If we can't find a client in the integration, show all
-            if (!$invoiceContacts) 
-            {
+            if (!$invoiceContacts) {
                 $invoiceContacts = $api->getContacts();
             }
-        }
-        else
-        {
+        } else {
             $apiConnected = false;
             $invoiceContacts = [];
         }

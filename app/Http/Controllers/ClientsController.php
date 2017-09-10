@@ -25,8 +25,8 @@ class ClientsController extends Controller
         UserRepositoryContract $users,
         ClientRepositoryContract $clients,
         SettingRepositoryContract $settings
-    )
-    {
+    ) {
+    
         $this->users = $users;
         $this->clients = $clients;
         $this->settings = $settings;
@@ -71,14 +71,11 @@ class ClientsController extends Controller
         $arr =array();
         $header=array('ID', 'Name', 'Email', 'Primary Number', 'Secondary Number', 'Address', 'Zip Code', 'City', 'Company Name', 'VAT', 'Company Type', 'User Assigned', 'Industry', 'Created At', 'Updated At');
         array_push($arr, $header);
-        foreach($clients as $client) {
+        foreach ($clients as $client) {
             $industry = '';
-            if($client->industry != null || $client->industry == '')
-            {
+            if ($client->industry != null || $client->industry == '') {
                 $industry = ' ';
-            }
-            else
-            {
+            } else {
                 $industry = $client->industry->name;
             }
             $data=array(
@@ -101,21 +98,20 @@ class ClientsController extends Controller
             array_push($arr, $data);
         }
         // dd($arr);
-        Excel::create('clients', function($excel) use ($arr) {
+        Excel::create('clients', function ($excel) use ($arr) {
             $excel->setTitle('Clients');
             $excel->setCreator('BIT')->setCompany('UEH BIT');
             $excel->setDescription('Clients list');
     
-            $excel->sheet('sheet1', function($sheet) use ($arr) {
+            $excel->sheet('sheet1', function ($sheet) use ($arr) {
                 $sheet->fromArray($arr, null, 'A1', false, false);
                 $sheet->freezeFirstRow();
                 $sheet->freezeFirstColumn();
-                $sheet->cells('A1:O1', function($cells) {
+                $sheet->cells('A1:O1', function ($cells) {
                     $cells->setFontWeight('bold');
                     $cells->setBackground('#F2C40F');
                 });
             });
-    
         })->download('xlsx');
     }
 
@@ -124,36 +120,30 @@ class ClientsController extends Controller
         $this->validate($request, [
             'file' => 'mimes:xlsx'
         ]);
-        if($request->hasFile('file')){
+        if ($request->hasFile('file')) {
             $path = $request->file('file')->getRealPath();
-			$data = Excel::load($path, function($reader) {
-            })->get();            
+            $data = Excel::load($path, function ($reader) {
+            })->get();
         }
         $insert = [];
-        if(!empty($data) && $data->count()){
+        if (!empty($data) && $data->count()) {
             foreach ($data as $key => $value) {
                 $assignee_name = \App\Models\User::where('name', $value->user_assigned)->first();
-                if($assignee_name != null)
-                {
+                if ($assignee_name != null) {
                     $assignee_id=$assignee_name->id;
-                }
-                else
-                {
+                } else {
                     $assignee_id = 1;
                 }
 
                 $industry_name=\App\Models\Industry::where('name', $value->industry)->first();
-                if($industry_name != null)
-                {
+                if ($industry_name != null) {
                     $industry_id = $industry_name->id;
-                }
-                else
-                {
+                } else {
                     $industry_id = 1;
                 }
                 
                 $insert[] = [
-                    'id' => $value->id, 
+                    'id' => $value->id,
                     'name' => $value->name,
                     'email' => $value->email,
                     'primary_number' => $value->primary_number,
@@ -171,15 +161,13 @@ class ClientsController extends Controller
                 ];
             }
             
-            if(!empty($insert)){
+            if (!empty($insert)) {
                 \Illuminate\Support\Facades\DB::table('clients')->insert($insert);
-            }
-            else
-            {
+            } else {
                 Session()->flash('flash_message_warning', 'Cannot import excel file');
             }
         }
-		return back();
+        return back();
     }
 
     /**
@@ -277,5 +265,4 @@ class ClientsController extends Controller
         Session()->flash('flash_message', 'New user is assigned');
         return redirect()->back();
     }
-
 }
