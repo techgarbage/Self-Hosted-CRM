@@ -89,7 +89,7 @@ class Dinero
             ],
             'json' => [
                 'timestamp' => $timestamp]
-        ]);
+            ]);
         return self::convertJson($res);
     }
 
@@ -103,7 +103,7 @@ class Dinero
             ],
             'json' => [
                 'timestamp' => $timestamp]
-        ]);
+            ]);
         return $res;
     }
 
@@ -115,7 +115,7 @@ class Dinero
             "headers" => [
                 "Authorization" => "Bearer " . self::$accessToken
             ]
-        ]);
+            ]);
 
         $request = json_decode($res->getBody(), true);
 
